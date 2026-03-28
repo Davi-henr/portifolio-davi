@@ -1,5 +1,5 @@
 // ==========================================
-// 1. ANIMAÇÕES QUANDO ROLA A TELA (Páginas 2 e 3)
+// 1. ANIMAÇÕES QUANDO ROLA A TELA
 // ==========================================
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -32,8 +32,7 @@ function initBg() {
         particles.push({
             x: Math.random() * bgCanvas.width, y: Math.random() * bgCanvas.height,
             size: Math.random() * 2 + 0.5,
-            vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
-            baseX: this.x, baseY: this.y // Para saber a origem
+            vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5
         });
     }
 }
@@ -43,35 +42,28 @@ function animateBg() {
     for(let i=0; i<particles.length; i++) {
         let p = particles[i];
         p.x += p.vx; p.y += p.vy;
-
-        // Rebate nas bordas
+        
         if(p.x < 0 || p.x > bgCanvas.width) p.vx *= -1;
         if(p.y < 0 || p.y > bgCanvas.height) p.vy *= -1;
 
-        // FÍSICA: FUGIR DO MOUSE
         if (mouse.x != null) {
             let dx = p.x - mouse.x;
             let dy = p.y - mouse.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
-
+            
             if (distance < mouse.r) {
-                // Força de empurrão
                 let forceDirectionX = dx / distance;
                 let forceDirectionY = dy / distance;
                 let force = (mouse.r - distance) / mouse.r;
-
-                // Aplica a força empurrando a partícula para longe
                 p.x += forceDirectionX * force * 5;
                 p.y += forceDirectionY * force * 5;
             }
         }
 
-        // Desenha a partícula
         bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
         bgCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
         bgCtx.fill();
 
-        // Conecta as partículas próximas
         for(let j=i; j<particles.length; j++) {
             let p2 = particles[j];
             let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
@@ -89,29 +81,34 @@ initBg(); animateBg();
 window.addEventListener('resize', initBg);
 
 // ==========================================
-// 3. JOGO DO PLANETA (COMER O VERMELHO)
+// 3. JOGO DO PLANETA (MODAL SECRETO)
 // ==========================================
 const gCanvas = document.getElementById('predator-game');
 const gCtx = gCanvas.getContext('2d');
 const scoreEl = document.getElementById('game-score');
+const gameOverlay = document.getElementById('game-overlay');
 
 let player = { x: 0, y: 0, r: 15 };
 let foods = []; let viruses = [];
+let isGameRunning = false; // Flag para pausar o jogo quando fechado
+let gMouseX = window.innerWidth/2, gMouseY = window.innerHeight/2;
 
 function initGame() {
     gCanvas.width = window.innerWidth; gCanvas.height = window.innerHeight;
     player.x = gCanvas.width/2; player.y = gCanvas.height/2;
+    player.r = 15; // Reseta o tamanho
+    scoreEl.innerText = "15";
     foods = []; viruses = [];
-
+    
     for(let i=0; i<70; i++) foods.push({ x: Math.random()*gCanvas.width, y: Math.random()*gCanvas.height, r: 3 });
     for(let i=0; i<10; i++) viruses.push({ x: Math.random()*gCanvas.width, y: Math.random()*gCanvas.height, r: 25 + Math.random()*20, vx: (Math.random()-0.5)*4, vy: (Math.random()-0.5)*4 });
 }
-initGame(); window.addEventListener('resize', initGame);
-
-let gMouseX = gCanvas.width/2, gMouseY = gCanvas.height/2;
-document.getElementById('scroll-box').addEventListener('mousemove', (e) => { gMouseX = e.clientX; gMouseY = e.clientY; });
+window.addEventListener('resize', () => { if(isGameRunning) initGame(); });
+window.addEventListener('mousemove', (e) => { if(isGameRunning) { gMouseX = e.clientX; gMouseY = e.clientY; }});
 
 function drawGame() {
+    if (!isGameRunning) return; // Para o processamento se o modal estiver fechado
+
     gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
     player.x += (gMouseX - player.x) * 0.1; player.y += (gMouseY - player.y) * 0.1;
 
@@ -130,22 +127,22 @@ function drawGame() {
         v.x += v.vx; v.y += v.vy;
         if(v.x < 0 || v.x > gCanvas.width) v.vx *= -1;
         if(v.y < 0 || v.y > gCanvas.height) v.vy *= -1;
-
+        
         if (player.r > v.r) {
-            gCtx.fillStyle = 'rgba(255, 95, 86, 0.2)';
+            gCtx.fillStyle = 'rgba(255, 95, 86, 0.2)'; 
             gCtx.strokeStyle = '#ff5f56'; gCtx.lineWidth = 1;
         } else {
-            gCtx.fillStyle = '#ff5f56';
+            gCtx.fillStyle = '#ff5f56'; 
             gCtx.strokeStyle = 'transparent';
         }
-
+        
         gCtx.beginPath(); gCtx.arc(v.x, v.y, v.r, 0, Math.PI*2); gCtx.fill();
         if (player.r > v.r) gCtx.stroke();
-
+        
         if(Math.hypot(player.x - v.x, player.y - v.y) < player.r + v.r) {
             if (player.r > v.r) {
                 player.r += 3; scoreEl.innerText = Math.floor(player.r);
-                v.x = Math.random()*gCanvas.width; v.y = Math.random()*gCanvas.height; v.r = player.r + Math.random()*20;
+                v.x = Math.random()*gCanvas.width; v.y = Math.random()*gCanvas.height; v.r = player.r + Math.random()*20; 
             } else if(player.r > 15) {
                 player.r -= 2; scoreEl.innerText = Math.floor(player.r);
             }
@@ -159,4 +156,17 @@ function drawGame() {
 
     requestAnimationFrame(drawGame);
 }
-drawGame();
+
+// ABRIR O JOGO
+document.getElementById('btn-secret-game').addEventListener('click', () => {
+    gameOverlay.classList.add('active');
+    isGameRunning = true;
+    initGame();
+    drawGame();
+});
+
+// FECHAR O JOGO
+document.getElementById('btn-close-game').addEventListener('click', () => {
+    gameOverlay.classList.remove('active');
+    isGameRunning = false;
+});
