@@ -17,27 +17,16 @@ body { background-color: var(--bg-dark); color: var(--text-main); overflow: hidd
 /* Sistema de Scroll Suave */
 .scroll-container {
     height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory;
-    scroll-behavior: smooth; /* Deixa as transições mais suaves */
-    scrollbar-width: none;
+    scroll-behavior: smooth; scrollbar-width: none;
 }
 .page { height: 100vh; width: 100vw; scroll-snap-align: start; display: flex; justify-content: center; align-items: center; position: relative; }
 .content-wrapper { width: 90%; max-width: 1000px; z-index: 10; position: relative; }
 
-/* --- BLOQUEIA O FUNDO DA PÁGINA 2 PARA O JOGO NÃO CONFUNDIR --- */
-#page-2 { background-color: var(--bg-dark); z-index: 2; }
-
-/* ==========================================
-   MÁGICA DAS ANIMAÇÕES DE ABERTURA
-   ========================================== */
-/* 1. Caindo do alto (Nome e Foto) */
+/* --- ANIMAÇÕES DE ABERTURA --- */
 .animate-drop { animation: dropDown 1.2s cubic-bezier(0.25, 1, 0.5, 1.2) forwards; opacity: 0; transform: translateY(-100px); }
-/* 2. Vindo da Esquerda (Card Objetivo) */
 .animate-slide-left { animation: slideLeft 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; opacity: 0; transform: translateX(-100px); }
-/* 3. Vindo da Direita (Card Experiência) */
 .animate-slide-right { animation: slideRight 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; opacity: 0; transform: translateX(100px); }
-/* 4. Subindo do fundo (Card Formação) */
 .animate-slide-up { animation: slideUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; opacity: 0; transform: translateY(100px); }
-/* 5. Fade In Simples (Para a dica de descer a tela) */
 .animate-fade-in { animation: fadeIn 1s ease forwards; opacity: 0; }
 
 @keyframes dropDown { to { opacity: 1; transform: translateY(0); } }
@@ -46,47 +35,25 @@ body { background-color: var(--bg-dark); color: var(--text-main); overflow: hidd
 @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { to { opacity: 1; } }
 
-/* Animações das outras páginas via JS */
 .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
 .animate-on-scroll.show { opacity: 1; transform: translateY(0); }
 
 /* --- CABEÇALHO E FOTO --- */
-.profile-header {
-    display: flex; align-items: center; gap: 30px; margin-bottom: 40px;
-    justify-content: flex-start;
-}
-.profile-img {
-    width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
-    border: 3px solid #fff; box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
-    background-color: #111;
-}
+.profile-header { display: flex; align-items: center; gap: 30px; margin-bottom: 40px; justify-content: flex-start; }
+.profile-img { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 0 20px rgba(255, 255, 255, 0.15); background-color: #111; }
 .elegant-title { font-size: 2.5rem; color: #fff; letter-spacing: 2px; font-weight: 800; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); }
 .elegant-subtitle { color: var(--text-muted); font-size: 1.1rem; margin-top: 5px; font-weight: 300; letter-spacing: 1px;}
 
-/* --- JANELAS (MAC STYLE - FIXAS) --- */
+/* --- JANELAS FIXAS --- */
 .resume-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .full-width { grid-column: 1 / -1; }
-
-.window-card {
-    background: var(--card-bg); border: 1px solid var(--border-color);
-    border-radius: 8px; backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-    display: flex; flex-direction: column; transition: transform 0.3s;
-}
+.window-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; transition: transform 0.3s; }
 .window-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.3); }
-
-.window-header {
-    background: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border-color);
-    padding: 10px 15px; border-radius: 8px 8px 0 0;
-    display: flex; align-items: center; justify-content: space-between;
-}
+.window-header { background: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border-color); padding: 10px 15px; border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: space-between; }
 .dots { display: flex; gap: 8px; }
 .dot { width: 12px; height: 12px; border-radius: 50%; }
-.red { background: #ff5f56; }
-.yellow { background: #ffbd2e; }
-.green { background: #27c93f; }
+.red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
 .window-title { color: #888; font-family: 'Courier New', monospace; font-size: 0.85rem; }
-
 .window-content { padding: 25px; color: var(--text-muted); line-height: 1.6; }
 .window-content .highlight { color: #fff; font-weight: bold; font-size: 1.1rem; }
 .window-content .date { font-family: 'Courier New', monospace; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
@@ -94,27 +61,23 @@ body { background-color: var(--bg-dark); color: var(--text-main); overflow: hidd
 .clean-list { list-style: none; }
 .clean-list li { margin-bottom: 10px; padding-left: 15px; position: relative; }
 .clean-list li::before { content: '→'; color: #fff; position: absolute; left: 0; font-weight: bold; }
-
 .skills-tags { display: flex; flex-wrap: wrap; gap: 10px; }
 .tag-white { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: #fff; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; }
 
-/* Dica de Rolagem */
 .scroll-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: #666; font-family: 'Courier New', monospace; font-size: 0.8rem; animation: floatUp 2s infinite ease-in-out; pointer-events: none; }
 @keyframes floatUp { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -10px); } }
-
-/* --- JOGO --- */
-#predator-game { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-.game-hud { position: absolute; top: 40px; left: 40px; z-index: 10; pointer-events: none; background: rgba(0,0,0,0.8); border: 1px solid var(--border-color); padding: 20px; border-radius: 10px; }
-.game-hud h2 { color: #fff; margin-bottom: 5px; font-family: 'Courier New', monospace;}
-.score-display { font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
 
 /* --- CONTATO --- */
 .mx-auto { margin: 0 auto; }
 .text-center { text-align: center; }
 .contact-links { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-.btn-dark-white {
-    padding: 12px 25px; color: #000; text-decoration: none;
-    background: #fff; border: 1px solid #fff; border-radius: 5px;
-    font-weight: bold; transition: 0.3s;
-}
+.btn-dark-white { padding: 12px 25px; color: #000; text-decoration: none; background: #fff; border: 1px solid #fff; border-radius: 5px; font-weight: bold; transition: 0.3s; cursor: pointer; }
 .btn-dark-white:hover { background: transparent; color: #fff; box-shadow: var(--accent-glow); }
+
+/* --- OVERLAY DO JOGO (MODAL SECRETO) --- */
+.hidden-overlay { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: var(--bg-dark); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+.hidden-overlay.active { opacity: 1; pointer-events: auto; }
+#predator-game { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+.game-hud { position: absolute; top: 40px; left: 40px; z-index: 10; background: rgba(0,0,0,0.8); border: 1px solid var(--border-color); padding: 20px; border-radius: 10px; }
+.game-hud h2 { color: #fff; margin-bottom: 5px; font-family: 'Courier New', monospace;}
+.score-display { font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
