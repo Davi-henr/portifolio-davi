@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DAVI HENRIQUE | Software Engineer</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-
+    
     <canvas id="neural-network"></canvas>
 
     <div class="scroll-container" id="scroll-box">
-
+        
         <section class="page" id="page-1">
             <div class="content-wrapper">
-
+                
                 <div class="profile-header animate-drop">
-                    <img src="img.png" alt="Davi Henrique" class="profile-img">
+                    <img src="../img/img.png" alt="Davi Henrique" class="profile-img">
                     <div class="title-container">
                         <h1 class="elegant-title">DAVI HENRIQUE BUENO</h1>
                         <h2 class="elegant-subtitle">Engenharia de Software EAD | 24 anos</h2>
@@ -44,8 +44,8 @@
                             <p class="date">10/2022 - Atual</p>
                             <ul class="clean-list">
                                 <li><strong>Sistemas Internos:</strong> Desenvolvi do zero uma solução automatizada para o Estoque de Defensivos e Tratamentos.</li>
-                                <li><strong>Dashboards:</strong> Mapa interativo dos lotes para visualização em tempo real.</li>
-                                <li><strong>Logística:</strong> Controle rigoroso de frota (50+ veículos) e notas fiscais.</li>
+                                <li><strong>Dashboards:</strong> Mapa interativo dos lotes para visualização em tempo real e relatórios automatizados.</li>
+                                <li><strong>Logística:</strong> Controle de manutenção de frota (50+ veículos) e lançamento de notas fiscais.</li>
                             </ul>
                         </div>
                     </div>
@@ -70,26 +70,16 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="scroll-hint animate-fade-in" style="animation-delay: 2s;">Desça para a Simulação ↓</div>
+                
+                <div class="scroll-hint animate-fade-in" style="animation-delay: 2s;">Desça para Contatos ↓</div>
             </div>
         </section>
 
         <section class="page" id="page-2">
-            <div class="game-hud animate-on-scroll">
-                <h2>> PROTOCOLO DE EXPANSÃO</h2>
-                <p>Absorva os dados brancos para crescer. <br>Se você for <strong>maior</strong> que os vírus vermelhos, você os devora!</p>
-                <div class="score-display">Massa: <span id="game-score">15</span></div>
-            </div>
-            <canvas id="predator-game"></canvas>
-            <div class="scroll-hint" style="bottom: 20px;">Desça para Contatos ↓</div>
-        </section>
-
-        <section class="page" id="page-3">
             <div class="content-wrapper text-center">
                 <h2 class="elegant-title animate-on-scroll" style="font-size: 3rem; margin-bottom: 20px;">CONEXÃO ESTABELECIDA</h2>
                 <p class="animate-on-scroll" style="color: #888; margin-bottom: 40px; font-size: 1.1rem; transition-delay: 0.2s;">Sistemas abertos. Aguardando transmissão de dados.</p>
-
+                
                 <div class="window-card animate-on-scroll mx-auto" style="max-width: 600px; transition-delay: 0.4s;">
                     <div class="window-header">
                         <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
@@ -100,16 +90,28 @@
                         <div class="contact-links">
                             <a href="https://linkedin.com/in/davi-henrique-903208315/" class="btn-dark-white" target="_blank">LinkedIn</a>
                             <a href="https://github.com/Davi-henr" class="btn-dark-white" target="_blank">GitHub</a>
-                            <a href="mailto:davihennriquebuenno@gmail.com" class="btn-dark-white">E-mail Direto</a>
+                            <a href="mailto:davihennriquebuenno@gmail.com" class="btn-dark-white">E-mail</a>
                             <a href="https://wa.me/5514981666671" class="btn-dark-white" target="_blank">WhatsApp</a>
                         </div>
                     </div>
                 </div>
+
+                <button id="btn-secret-game" class="btn-dark-white animate-on-scroll" style="margin-top: 50px; font-size: 0.8rem; border-style: dashed; transition-delay: 0.6s;">>_ Iniciar Simulação de Física</button>
             </div>
         </section>
 
     </div>
 
-    <script src="script.js"></script>
+    <div id="game-overlay" class="hidden-overlay">
+        <div class="game-hud">
+            <h2>> PROTOCOLO DE EXPANSÃO</h2>
+            <p>Absorva os dados brancos para crescer. <br>Se você for <strong>maior</strong> que os vírus vermelhos, você os devora!</p>
+            <div class="score-display">Massa: <span id="game-score">15</span></div>
+            <button id="btn-close-game" class="btn-dark-white" style="margin-top: 20px; font-size: 0.8rem;">Encerrar Simulação</button>
+        </div>
+        <canvas id="predator-game"></canvas>
+    </div>
+
+    <script src="../scripts/script.js"></script>
 </body>
 </html>
