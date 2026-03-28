@@ -61,15 +61,15 @@ function animateBg() {
         }
 
         bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        bgCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        bgCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
         bgCtx.fill();
 
         for(let j=i; j<particles.length; j++) {
             let p2 = particles[j];
             let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-            if(dist < 120) {
+            if(dist < 150) {
                 bgCtx.beginPath();
-                bgCtx.strokeStyle = `rgba(255, 255, 255, ${0.15 - dist/800})`;
+                bgCtx.strokeStyle = `rgba(0, 243, 255, ${0.15 - dist/1000})`; // Linhas azul neon fracas
                 bgCtx.lineWidth = 0.5;
                 bgCtx.moveTo(p.x, p.y); bgCtx.lineTo(p2.x, p2.y); bgCtx.stroke();
             }
@@ -81,92 +81,85 @@ initBg(); animateBg();
 window.addEventListener('resize', initBg);
 
 // ==========================================
-// 3. JOGO DO PLANETA (MODAL SECRETO)
+// 3. MOTOR HOLOGRÁFICO 3D (Girar Cartões)
 // ==========================================
-const gCanvas = document.getElementById('predator-game');
-const gCtx = gCanvas.getContext('2d');
-const scoreEl = document.getElementById('game-score');
-const gameOverlay = document.getElementById('game-overlay');
+const cards3D = document.querySelectorAll('.card-3d');
 
-let player = { x: 0, y: 0, r: 15 };
-let foods = []; let viruses = [];
-let isGameRunning = false; // Flag para pausar o jogo quando fechado
-let gMouseX = window.innerWidth/2, gMouseY = window.innerHeight/2;
+cards3D.forEach(card => {
+    let isDragging = false;
+    let startX, startY;
+    let currentRotateX = 0;
+    let currentRotateY = 0;
 
-function initGame() {
-    gCanvas.width = window.innerWidth; gCanvas.height = window.innerHeight;
-    player.x = gCanvas.width/2; player.y = gCanvas.height/2;
-    player.r = 15; // Reseta o tamanho
-    scoreEl.innerText = "15";
-    foods = []; viruses = [];
-    
-    for(let i=0; i<70; i++) foods.push({ x: Math.random()*gCanvas.width, y: Math.random()*gCanvas.height, r: 3 });
-    for(let i=0; i<10; i++) viruses.push({ x: Math.random()*gCanvas.width, y: Math.random()*gCanvas.height, r: 25 + Math.random()*20, vx: (Math.random()-0.5)*4, vy: (Math.random()-0.5)*4 });
-}
-window.addEventListener('resize', () => { if(isGameRunning) initGame(); });
-window.addEventListener('mousemove', (e) => { if(isGameRunning) { gMouseX = e.clientX; gMouseY = e.clientY; }});
+    // Detecta o clique/toque no cartão
+    card.addEventListener('mousedown', startDrag);
+    card.addEventListener('touchstart', startDrag, {passive: true});
 
-function drawGame() {
-    if (!isGameRunning) return; // Para o processamento se o modal estiver fechado
-
-    gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-    player.x += (gMouseX - player.x) * 0.1; player.y += (gMouseY - player.y) * 0.1;
-
-    // COMIDA
-    gCtx.fillStyle = 'rgba(255,255,255,0.6)';
-    foods.forEach(f => {
-        gCtx.beginPath(); gCtx.arc(f.x, f.y, f.r, 0, Math.PI*2); gCtx.fill();
-        if(Math.hypot(player.x - f.x, player.y - f.y) < player.r + f.r) {
-            player.r += 0.5; scoreEl.innerText = Math.floor(player.r);
-            f.x = Math.random()*gCanvas.width; f.y = Math.random()*gCanvas.height;
-        }
-    });
-
-    // VÍRUS
-    viruses.forEach(v => {
-        v.x += v.vx; v.y += v.vy;
-        if(v.x < 0 || v.x > gCanvas.width) v.vx *= -1;
-        if(v.y < 0 || v.y > gCanvas.height) v.vy *= -1;
+    function startDrag(e) {
+        isDragging = true;
+        // Pega a posição do mouse ou do toque na tela do celular
+        startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        startY = e.type.includes('mouse') ? e.pageY : e.touches[0].pageY;
         
-        if (player.r > v.r) {
-            gCtx.fillStyle = 'rgba(255, 95, 86, 0.2)'; 
-            gCtx.strokeStyle = '#ff5f56'; gCtx.lineWidth = 1;
+        // Remove a transição suave para grudar no mouse perfeitamente
+        card.style.transition = 'none'; 
+    }
+
+    // Movimento do mouse/dedo
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, {passive: true});
+
+    function drag(e) {
+        if (!isDragging) return;
+
+        const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        const y = e.type.includes('mouse') ? e.pageY : e.touches[0].pageY;
+
+        // Calcula a distância que o mouse moveu
+        const deltaX = x - startX;
+        const deltaY = y - startY;
+
+        // Atualiza a rotação (multiplicador ajusta a sensibilidade)
+        const newRotateY = currentRotateY + deltaX * 0.5;
+        const newRotateX = currentRotateX - deltaY * 0.5;
+
+        // Aplica a rotação 3D ao cartão
+        card.style.transform = `rotateX(${newRotateX}deg) rotateY(${newRotateY}deg)`;
+    }
+
+    // Soltar o mouse/dedo
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+
+    function endDrag(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        // Devolve a transição suave
+        card.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+
+        // Pega a rotação atual baseada na matriz de transformação (matemática pura do CSS)
+        const st = window.getComputedStyle(card, null);
+        const tr = st.getPropertyValue("transform");
+        
+        let rotY = 0;
+        if(tr !== 'none') {
+            const values = tr.split('(')[1].split(')')[0].split(',');
+            const a = values[0];
+            const b = values[1];
+            rotY = Math.round(Math.atan2(b, a) * (180/Math.PI));
+        }
+
+        // Snap: Se passou do meio (90 graus), vira de costas (Inglês). Se não, volta de frente (Português).
+        if (Math.abs(rotY) > 90) {
+            currentRotateY = 180; 
         } else {
-            gCtx.fillStyle = '#ff5f56'; 
-            gCtx.strokeStyle = 'transparent';
+            currentRotateY = 0;
         }
         
-        gCtx.beginPath(); gCtx.arc(v.x, v.y, v.r, 0, Math.PI*2); gCtx.fill();
-        if (player.r > v.r) gCtx.stroke();
+        // Reseta o eixo X (pra cima e pra baixo) para o cartão não ficar torto
+        currentRotateX = 0; 
         
-        if(Math.hypot(player.x - v.x, player.y - v.y) < player.r + v.r) {
-            if (player.r > v.r) {
-                player.r += 3; scoreEl.innerText = Math.floor(player.r);
-                v.x = Math.random()*gCanvas.width; v.y = Math.random()*gCanvas.height; v.r = player.r + Math.random()*20; 
-            } else if(player.r > 15) {
-                player.r -= 2; scoreEl.innerText = Math.floor(player.r);
-            }
-        }
-    });
-
-    // JOGADOR
-    gCtx.beginPath(); gCtx.arc(player.x, player.y, player.r, 0, Math.PI*2);
-    gCtx.fillStyle = '#ffffff'; gCtx.shadowBlur = 25; gCtx.shadowColor = 'rgba(255,255,255,0.8)';
-    gCtx.fill(); gCtx.shadowBlur = 0;
-
-    requestAnimationFrame(drawGame);
-}
-
-// ABRIR O JOGO
-document.getElementById('btn-secret-game').addEventListener('click', () => {
-    gameOverlay.classList.add('active');
-    isGameRunning = true;
-    initGame();
-    drawGame();
-});
-
-// FECHAR O JOGO
-document.getElementById('btn-close-game').addEventListener('click', () => {
-    gameOverlay.classList.remove('active');
-    isGameRunning = false;
+        card.style.transform = `rotateX(0deg) rotateY(${currentRotateY}deg)`;
+    }
 });
