@@ -8,6 +8,8 @@ Bem-vindo ao repositório do meu portfólio pessoal! Este projeto foi desenvolvi
 ## 🎯 Sobre o Projeto
 
 O portfólio reflete meu momento atual: a transição de uma sólida experiência em logística e controle de estoque para a área de **Engenharia de Software**. A interface foi construída com um design *dark mode* elegante, onde as informações são apresentadas como arquivos de sistema (`.txt`, `.log`, `.json`), conectando minha paixão por tecnologia com a minha apresentação profissional.
+<img width="1204" height="817" alt="image" src="https://github.com/user-attachments/assets/af3ab6c8-a20c-41c3-a064-4f073e59bcf2" />
+
 
 ### ✨ Funcionalidades Principais
 
